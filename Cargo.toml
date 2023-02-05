@@ -2,7 +2,7 @@
 name = "esvg"
 description = "Document object model based SVG library"
 keywords = ["svg", "dom"]
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 license = "MIT"
 authors = [
@@ -13,5 +13,5 @@ repository = "https://github.com/emilyselwood/esvg"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-polygonical = "0.3.0"
+polygonical = "0.4"
 quick-xml = "0.27"
