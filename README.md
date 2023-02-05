@@ -9,7 +9,7 @@ Uses [Polygonical](https://docs.rs/polygonical/) for its shape representation
 ## Examples
 
 Construct a document and draw a circle
-```rust
+```rust,editable
 
 use esvg::page::Page;
 use esvg::{create_document, Element};

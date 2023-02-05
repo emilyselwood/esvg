@@ -1,3 +1,4 @@
+//! Helpers for handling Path data
 use crate::Element;
 use ::polygonical::point::Point;
 use ::polygonical::polygon::Polygon;

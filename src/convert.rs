@@ -1,3 +1,4 @@
+//! A collection of useful conversion functions
 use std::f64;
 use std::f64::consts::PI;
 use std::str::FromStr;
@@ -87,6 +88,8 @@ pub fn parse_length(value: &str, dpi: i32) -> Result<i32, error::Error> {
     }
 }
 
+/// Convert a pixel length into a specified unit.
+/// Supports "mm", "cm", "in", and "px" values for units
 pub fn px_to_length(value: i32, unit: &str, dpi: i32) -> Result<String, error::Error> {
     match unit {
         "mm" => {
@@ -109,6 +112,7 @@ pub fn px_to_length(value: i32, unit: &str, dpi: i32) -> Result<String, error::E
     }
 }
 
+/// get the unit suffix from a string, if it has one.
 pub fn extract_unit(value: &str) -> Result<&str, error::Error> {
     let l = value.len();
     if l > 2 {
@@ -122,23 +126,26 @@ pub fn extract_unit(value: &str) -> Result<&str, error::Error> {
     }
 }
 
-pub fn deg_to_rad(value: f64) -> f64 {
-    value * (PI / 180.0)
-}
-
-pub fn rad_to_deg(value: f64) -> f64 {
-    value * (180.0 / PI)
-}
-
+/// Parse an angle in degrees into radians
 pub fn parse_angle(value: &str) -> Result<f64, error::Error> {
     let angle = f64::from_str(value)?;
     if !(0.0..=360.0).contains(&angle) {
         Err(error::Error::AngleOutOfRange)
     } else {
-        Ok(deg_to_rad(angle))
+        Ok(angle.to_radians())
     }
 }
 
+/// Parse a hex string style colour into an R, G, B, A tuple between 0 and 1
+/// Note: Does not support three character hex codes
+///
+/// ```
+/// let (r, g, b, a) = esvg::convert::parse_colour("#FF00AA33").unwrap();
+/// assert_eq!(r, 1.0);
+/// assert_eq!(g, 0.0);
+/// assert_eq!(b, 0.6666666666666666);
+/// assert_eq!(a, 0.2);
+/// ```
 pub fn parse_colour(value: &str) -> Result<(f64, f64, f64, f64), error::Error> {
     if value.len() < 6 {
         return Err(error::Error::ColourError);
@@ -164,13 +171,21 @@ pub fn parse_colour(value: &str) -> Result<(f64, f64, f64, f64), error::Error> {
     ))
 }
 
+/// 30 degrees as radians
 pub const DEG_30: f64 = 30.0 * (PI / 180.0);
+/// 45 degrees as radians
 pub const DEG_45: f64 = 45.0 * (PI / 180.0);
+/// 60 degrees as radians
 pub const DEG_60: f64 = 60.0 * (PI / 180.0);
+/// 90 degrees as radians
 pub const DEG_90: f64 = 90.0 * (PI / 180.0);
+/// 120 degrees as radians
 pub const DEG_120: f64 = 120.0 * (PI / 180.0);
+/// 180 degrees as radians
 pub const DEG_180: f64 = 180.0 * (PI / 180.0);
+/// 270 degrees as radians
 pub const DEG_270: f64 = 270.0 * (PI / 180.0);
+/// 360 degrees as radians
 pub const DEG_360: f64 = 360.0 * (PI / 180.0);
 
 #[cfg(test)]
