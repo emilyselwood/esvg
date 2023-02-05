@@ -1,3 +1,4 @@
+//! Helper functions for handling text
 use crate::{Element, Node};
 use ::polygonical::point::Point;
 

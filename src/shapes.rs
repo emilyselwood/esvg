@@ -1,3 +1,4 @@
+//! Helper functions for creating particular shapes
 use crate::Element;
 use ::polygonical::point::Point;
 

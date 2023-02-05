@@ -1,23 +1,27 @@
+//! Error types used by this library
 use ::quick_xml;
 use quick_xml::events::attributes::AttrError;
 use std::fmt;
 use std::num::{ParseFloatError, ParseIntError};
 use std::str;
 
+/// All the possible errors returned by this library
 #[derive(Debug)]
 pub enum Error {
+    /// When parsing an angle and its not between 0 and 360 degrees
     AngleOutOfRange,
+    /// When trying to parse a paper name and it doesn't make sense or it is not implemented yet
     UnknownPaper,
-    ParamFormatError(String),
     ParseInt(ParseIntError),
     ParseFloat(ParseFloatError),
     ParseBool(str::ParseBoolError),
     IOError(std::io::Error),
     XMLError(quick_xml::Error),
     XMLAttrError(AttrError),
+    /// Attempted to parse something that wasn't a valid xml document
     BadDocument,
     UTF8Error(str::Utf8Error),
-    SVGConversionError(String),
+    /// A problem trying to parse a hex colour, likely the value is too short
     ColourError,
 }
 

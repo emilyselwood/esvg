@@ -1,5 +1,7 @@
+//! Attribute values and handling different types that can be converted to a value
 use std::fmt;
 
+/// Wrapper type for attribute values to allow setting attributes to floats or ints easily
 #[derive(Debug, Clone)]
 pub struct Value {
     value: String,

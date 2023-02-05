@@ -55,7 +55,7 @@ pub fn read(path: &str) -> Result<Element, Error> {
     read::parse_string(buffer)
 }
 
-// Node defines a node in the xml tree
+/// Defines a node in the xml tree
 #[derive(Debug, Clone)]
 pub enum Node {
     Text(String),
@@ -73,7 +73,7 @@ impl fmt::Display for Node {
     }
 }
 
-// Element is an svg tag
+/// An svg xml tag
 #[derive(Debug, Clone)]
 pub struct Element {
     pub name: String,
@@ -82,6 +82,12 @@ pub struct Element {
 }
 
 impl Element {
+    /// Create a new Element with the provided tag name
+    ///
+    /// ```
+    /// let el = esvg::Element::new("g");
+    /// assert_eq!(el.to_pretty_string(), "<g />\n".to_string());
+    /// ```
     pub fn new(name: &str) -> Self {
         Element {
             name: name.to_string(),
@@ -90,7 +96,21 @@ impl Element {
         }
     }
 
-    // An element is a node of type element.
+    /// Short hand for creating a group element
+    ///
+    /// ```
+    /// let el = esvg::Element::new("g");
+    /// let group = esvg::Element::group();
+    ///
+    /// assert_eq!(el.to_pretty_string(), group.to_pretty_string());
+    /// ```
+    pub fn group() -> Self {
+        Element::new("g")
+    }
+
+    // TODO: add more short hand methods like group here
+
+    /// An element is a node of type element.
     pub fn as_node(&self) -> Node {
         Node::Element(self.clone())
     }
@@ -122,7 +142,7 @@ impl Element {
         self.attributes.get(&key.into()).map(|s| s.to_string_bare())
     }
 
-    // Create a copy of this element with out its children
+    /// Create a copy of this element with out its children
     pub fn shallow_clone(&self) -> Element {
         let mut result = Element::new(self.name.as_str());
         for (k, v) in &self.attributes {

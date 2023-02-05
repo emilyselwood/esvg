@@ -1,3 +1,4 @@
+//! Tools for reading in svg files
 use crate::error::Error;
 use crate::{Element, Node};
 use quick_xml::events::{BytesStart, Event};

@@ -1,6 +1,9 @@
+//! Things to do with the document being created, its size, its borders, etc
 use crate::convert;
 use crate::error::Error;
 
+/// Describe borders around the edge of a page. These don't prevent you drawing off the side of the page
+/// they are here to help you keep track of them, they can freely be set to zero.
 pub struct Borders {
     pub top: i32,
     pub bottom: i32,
@@ -9,10 +12,12 @@ pub struct Borders {
 }
 
 impl Borders {
+    /// Create a default border of half an inch on all sides
     pub fn default(dpi: i32) -> Borders {
         Borders::even(0.5, dpi)
     }
 
+    /// Create a border of size on all four sides
     pub fn even(size: f64, dpi: i32) -> Borders {
         Borders {
             top: convert::inches_to_pixels(size, dpi),
@@ -23,6 +28,7 @@ impl Borders {
     }
 }
 
+/// Page is used to define the size of an svg you wish to create.
 pub struct Page {
     pub dpi: i32,
     pub width: i32,
@@ -32,6 +38,9 @@ pub struct Page {
 }
 
 impl Page {
+    /// Construct a page given a name for it and the dpi and margin information.
+    ///
+    /// The name can either be something like A3 or Letter or 200mmx200in to create a 200 millimeter by 200 inch svg
     pub fn build_page(name: &str, dpi: i32, margin: f64) -> Result<Page, Error> {
         let border = Borders::even(margin, dpi);
 
@@ -60,11 +69,13 @@ impl Page {
         }
     }
 
+    /// Create an A4 page with default borders
     #[allow(non_snake_case)] // Paper names are upper case we should match
     pub fn A4(dpi: i32) -> Page {
         Page::A4_with_border(dpi, Borders::default(dpi))
     }
 
+    /// Create an A4 page with the provided borders
     #[allow(non_snake_case)] // Paper names are upper case we should match
     pub fn A4_with_border(dpi: i32, border: Borders) -> Page {
         Page {
@@ -76,11 +87,13 @@ impl Page {
         }
     }
 
+    /// Create an A3 page with default boarders
     #[allow(non_snake_case)] // Paper names are upper case we should match
     pub fn A3(dpi: i32) -> Page {
         Page::A3_with_border(dpi, Borders::default(dpi))
     }
 
+    /// Create an A3 page with the provided borders
     #[allow(non_snake_case)] // Paper names are upper case we should match
     pub fn A3_with_border(dpi: i32, border: Borders) -> Page {
         Page {
@@ -92,10 +105,12 @@ impl Page {
         }
     }
 
+    /// Create a letter sized page with default boarders
     pub fn letter(dpi: i32) -> Page {
         Page::letter_with_border(dpi, Borders::default(dpi))
     }
 
+    /// Create a letter sized page with the provided borders
     pub fn letter_with_border(dpi: i32, border: Borders) -> Page {
         Page {
             dpi,
