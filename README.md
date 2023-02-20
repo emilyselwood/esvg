@@ -18,7 +18,7 @@ use polygonical::point::Point;
 let page = Page::A4(96);  // 96 dpi
 let mut doc = create_document(&page);
 let mut group = Element::new("g");
-let circle = esvg::shapes::circle(Point::new(100.0, 100.0), 50);
+let circle = esvg::shapes::circle(page.center(), 50);
 
 group.add(&circle);
 doc.add(&group);
@@ -26,7 +26,7 @@ doc.add(&group);
 let expected = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE svg PUBLIC \"-//W3C//DTD SVG 1.0//EN\" \"http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd\">
 <svg height=\"297.1270833333333mm\" viewBox=\"0, 0, 794, 1123\" width=\"210.07916666666668mm\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">
 \t<g>
-\t\t<circle cx=\"100\" cy=\"100\" fill=\"none\" r=\"50\" />
+\t\t<circle cx=\"349\" cy=\"513\" fill=\"none\" r=\"50\" />
 \t</g>
 </svg>
 ";

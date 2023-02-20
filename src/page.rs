@@ -1,4 +1,6 @@
 //! Things to do with the document being created, its size, its borders, etc
+use polygonical::point::Point;
+
 use crate::convert;
 use crate::error::Error;
 
@@ -120,4 +122,76 @@ impl Page {
             borders: border,
         }
     }
+
+    // TODO: add more paper sizes
+
+    /// Return the point in the document that matches to the borders in the top left corner
+    pub fn top_left(&self) -> Point {
+        Point::new(
+            self.borders.left, 
+            self.borders.top,
+        )
+    }
+
+    /// Return the point in the document that matches to the borders in the top left corner
+    pub fn top_right(&self) -> Point {
+        Point::new(
+            self.width - self.borders.right, 
+            self.borders.top,
+        )
+    }
+
+    /// Return the point in the document that matches to the borders in the bottom left corner
+    pub fn bottom_left(&self) -> Point {
+        Point::new(
+            self.borders.left, 
+            self.height - self.borders.bottom,
+        )
+    }
+
+    /// Return the point in the document that matches to the borders in the bottom right corner
+    pub fn bottom_right(&self) -> Point {
+        Point:: new(
+            self.width - self.borders.right, 
+            self.height - self.borders.bottom,
+        )
+    }
+
+    // Return the center point of the document including the borders
+    pub fn center(&self) -> Point {
+        Point::new(
+            (self.width - self.borders.right - self.borders.left)/2,
+            (self.height - self.borders.top - self.borders.bottom) / 2,
+        )
+    }
+    
+    pub fn center_left(&self) -> Point {
+        Point::new(
+            self.borders.left,
+            (self.height - self.borders.top - self.borders.bottom) / 2,
+        )
+    }
+
+    pub fn center_right(&self) -> Point {
+        Point::new(
+            self.width - self.borders.right,
+            (self.height - self.borders.top - self.borders.bottom) / 2,
+        )
+    }
+
+    pub fn center_top(&self) -> Point {
+        Point::new(
+            (self.width - self.borders.right - self.borders.left)/2,
+            self.borders.top,
+        )
+    }
+
+    pub fn center_bottom(&self) -> Point {
+        Point::new(
+            (self.width - self.borders.right - self.borders.left)/2,
+            self.height - self.borders.bottom,
+        )
+    }
+
+
 }
