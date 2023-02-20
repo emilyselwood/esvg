@@ -45,14 +45,14 @@ impl Data {
 
     /// Add a Move To step to this path.
     pub fn move_to(&mut self, p: Point) -> &mut Data {
-        self.segments.push(format!("M{} {}", p.x, p.y));
+        self.segments.push(format!("M{:.3} {:.3}", p.x, p.y));
 
         self
     }
 
     /// Add a line to step to this path
     pub fn line_to(&mut self, p: Point) -> &mut Data {
-        self.segments.push(format!("L{} {}", p.x, p.y));
+        self.segments.push(format!("L{:.3} {:.3}", p.x, p.y));
 
         self
     }
@@ -78,7 +78,7 @@ impl Data {
         };
 
         self.segments.push(format!(
-            "A{} {} {} {} {} {} {}",
+            "A{} {} {:.3} {} {} {:.3} {:.3}",
             rx, ry, rotation, lv, sv, p.x, p.y
         ));
 

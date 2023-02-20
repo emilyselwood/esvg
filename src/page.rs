@@ -148,39 +148,53 @@ impl Page {
         )
     }
 
-    // Return the center point of the document including the borders
+    /// Return the center point of the document including the borders
     pub fn center(&self) -> Point {
         Point::new(
-            (self.width - self.borders.right - self.borders.left) / 2,
-            (self.height - self.borders.top - self.borders.bottom) / 2,
+            self.borders.left + ((self.width - self.borders.right - self.borders.left) / 2),
+            self.borders.top + ((self.height - self.borders.top - self.borders.bottom) / 2),
         )
     }
 
+    /// Return the point on the left border in the middle vertically
     pub fn center_left(&self) -> Point {
         Point::new(
             self.borders.left,
-            (self.height - self.borders.top - self.borders.bottom) / 2,
+            self.borders.top + ((self.height - self.borders.top - self.borders.bottom) / 2),
         )
     }
 
+    /// Return the point on the right border in the middle vertically
     pub fn center_right(&self) -> Point {
         Point::new(
             self.width - self.borders.right,
-            (self.height - self.borders.top - self.borders.bottom) / 2,
+            self.borders.top + ((self.height - self.borders.top - self.borders.bottom) / 2),
         )
     }
 
+    /// Return the point on the top border in the middle horizontally
     pub fn center_top(&self) -> Point {
         Point::new(
-            (self.width - self.borders.right - self.borders.left) / 2,
+            self.borders.left + ((self.width - self.borders.right - self.borders.left) / 2),
             self.borders.top,
         )
     }
 
+    /// Return the point on the bottom border in the middle horizontally
     pub fn center_bottom(&self) -> Point {
         Point::new(
-            (self.width - self.borders.right - self.borders.left) / 2,
+            self.borders.left + ((self.width - self.borders.right - self.borders.left) / 2),
             self.height - self.borders.bottom,
         )
+    }
+
+    /// Return the width of the page minus the borders in pixels
+    pub fn display_width_px(&self) -> i32 {
+        self.width - self.borders.right - self.borders.left
+    }
+
+    /// Return the width of the page minus the borders in pixels
+    pub fn display_height_px(&self) -> i32 {
+        self.height - self.borders.top - self.borders.bottom
     }
 }
