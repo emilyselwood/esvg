@@ -137,6 +137,7 @@ pub fn parse_angle(value: &str) -> Result<f64, error::Error> {
 }
 
 /// Parse a hex string style colour into an R, G, B, A tuple between 0 and 1
+/// If no alpha channel is provided then this will assume 1.0
 /// Note: Does not support three character hex codes
 ///
 /// ```

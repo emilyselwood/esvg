@@ -28,6 +28,39 @@ impl Borders {
             right: convert::inches_to_pixels(size, dpi),
         }
     }
+
+    pub fn rotate(&self) -> Borders {
+        Borders {
+            top: self.left,
+            bottom: self.right,
+            left: self.bottom,
+            right: self.top,
+        }
+    }
+}
+
+macro_rules! paper_size{
+    // There isn't a way to concatenate identifiers in function names so we have to provide both.
+    // this sucks, but the long_name should always be equal to ${name}_with_border
+    ($($name:ident, $long_name:ident: $width:expr, $height:expr,)*) => {
+        $(
+            #[allow(non_snake_case)]
+            pub fn $name(dpi:i32) -> Page {
+                Page::$long_name(dpi, Borders::default(dpi))
+            }
+
+            #[allow(non_snake_case)]
+            pub fn $long_name(dpi: i32, border: Borders) -> Page {
+                Page {
+                    dpi,
+                    width: convert::inches_to_pixels($width, dpi),
+                    height: convert::inches_to_pixels($height, dpi),
+        
+                    borders: border,
+                }
+            }
+        )*
+    };
 }
 
 /// Page is used to define the size of an svg you wish to create.
@@ -63,6 +96,8 @@ impl Page {
             }
         } else {
             match name.to_lowercase().as_str() {
+                // TODO: add more paper sizes
+                "a5" => Ok(Page::A5_with_border(dpi, border)),
                 "a4" => Ok(Page::A4_with_border(dpi, border)),
                 "a3" => Ok(Page::A3_with_border(dpi, border)),
                 "letter" => Ok(Page::letter_with_border(dpi, border)),
@@ -71,59 +106,25 @@ impl Page {
         }
     }
 
-    /// Create an A4 page with default borders
-    #[allow(non_snake_case)] // Paper names are upper case we should match
-    pub fn A4(dpi: i32) -> Page {
-        Page::A4_with_border(dpi, Borders::default(dpi))
-    }
+    // Create paper sizes using macros to avoid duplication
+    // TODO: add more paper sizes (make sure to keep with the same pattern)
+    paper_size!(
+        A5, A5_with_border: 5.8, 8.27,
+        A4, A4_with_border: 8.27, 11.7,
+        A3, A3_with_border: 11.7, 16.5,
+        letter, letter_with_border: 8.5, 11.0,
+    );
 
-    /// Create an A4 page with the provided borders
-    #[allow(non_snake_case)] // Paper names are upper case we should match
-    pub fn A4_with_border(dpi: i32, border: Borders) -> Page {
-        Page {
-            dpi,
-            width: convert::inches_to_pixels(8.27, dpi),
-            height: convert::inches_to_pixels(11.7, dpi),
-
-            borders: border,
+    /// Rotate this page through 90 degrees, portrait to landscape and landscape to portrait.
+    /// Note: you will need to keep track of this yourself.
+    pub fn rotate(&self) -> Page {
+        Page{
+            dpi: self.dpi,
+            width: self.height,
+            height: self.width,
+            borders: self.borders.rotate(),
         }
     }
-
-    /// Create an A3 page with default boarders
-    #[allow(non_snake_case)] // Paper names are upper case we should match
-    pub fn A3(dpi: i32) -> Page {
-        Page::A3_with_border(dpi, Borders::default(dpi))
-    }
-
-    /// Create an A3 page with the provided borders
-    #[allow(non_snake_case)] // Paper names are upper case we should match
-    pub fn A3_with_border(dpi: i32, border: Borders) -> Page {
-        Page {
-            dpi,
-            width: convert::inches_to_pixels(11.7, dpi),
-            height: convert::inches_to_pixels(16.5, dpi),
-
-            borders: border,
-        }
-    }
-
-    /// Create a letter sized page with default boarders
-    pub fn letter(dpi: i32) -> Page {
-        Page::letter_with_border(dpi, Borders::default(dpi))
-    }
-
-    /// Create a letter sized page with the provided borders
-    pub fn letter_with_border(dpi: i32, border: Borders) -> Page {
-        Page {
-            dpi,
-            width: convert::inches_to_pixels(8.5, dpi),
-            height: convert::inches_to_pixels(11.0, dpi),
-
-            borders: border,
-        }
-    }
-
-    // TODO: add more paper sizes
 
     /// Return the point in the document that matches to the borders in the top left corner
     pub fn top_left(&self) -> Point {
@@ -198,3 +199,5 @@ impl Page {
         self.height - self.borders.top - self.borders.bottom
     }
 }
+
+
