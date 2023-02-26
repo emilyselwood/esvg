@@ -55,7 +55,7 @@ macro_rules! paper_size{
                     dpi,
                     width: convert::inches_to_pixels($width, dpi),
                     height: convert::inches_to_pixels($height, dpi),
-        
+
                     borders: border,
                 }
             }
@@ -118,7 +118,7 @@ impl Page {
     /// Rotate this page through 90 degrees, portrait to landscape and landscape to portrait.
     /// Note: you will need to keep track of this yourself.
     pub fn rotate(&self) -> Page {
-        Page{
+        Page {
             dpi: self.dpi,
             width: self.height,
             height: self.width,
@@ -199,5 +199,3 @@ impl Page {
         self.height - self.borders.top - self.borders.bottom
     }
 }
-
-
