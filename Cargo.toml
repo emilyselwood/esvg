@@ -2,7 +2,7 @@
 name = "esvg"
 description = "Document object model based SVG library"
 keywords = ["svg", "dom"]
-version = "0.3.0"
+version = "0.4.0"
 edition = "2021"
 license = "MIT"
 authors = [
@@ -14,4 +14,4 @@ repository = "https://github.com/emilyselwood/esvg"
 
 [dependencies]
 polygonical = "0.5"
-quick-xml = "0.27"
+quick-xml = "0.29"
