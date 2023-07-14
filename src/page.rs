@@ -39,7 +39,7 @@ impl Borders {
     }
 }
 
-macro_rules! paper_size{
+macro_rules! paper_size {
     // There isn't a way to concatenate identifiers in function names so we have to provide both.
     // this sucks, but the long_name should always be equal to ${name}_with_border
     ($($name:ident, $long_name:ident: $width:expr, $height:expr,)*) => {
@@ -65,17 +65,22 @@ macro_rules! paper_size{
 
 /// Page is used to define the size of an svg you wish to create.
 pub struct Page {
+    /// Pixels per inch for calculating conversions
     pub dpi: i32,
+    /// Width of the page in pixels
     pub width: i32,
+    /// Height of the page in pixels
     pub height: i32,
-
+    /// Borders represent the padding around the edge of the page that should be left alone.
+    /// Note: it is up to you to deal with this, nothing will stop you drawing over the border areas
     pub borders: Borders,
 }
 
 impl Page {
     /// Construct a page given a name for it and the dpi and margin information.
     ///
-    /// The name can either be something like A3 or Letter or 200mmx200in to create a 200 millimeter by 200 inch svg
+    /// The name can either be something like A3 or Letter or 200mmx200in to create a 200 millimetre by 200 inch svg
+    /// Margin is always in inches. It doesn't stop you drawing over the edge of the page.
     pub fn build_page(name: &str, dpi: i32, margin: f64) -> Result<Page, Error> {
         let border = Borders::even(margin, dpi);
 
@@ -116,7 +121,6 @@ impl Page {
     );
 
     /// Rotate this page through 90 degrees, portrait to landscape and landscape to portrait.
-    /// Note: you will need to keep track of this yourself.
     pub fn rotate(&self) -> Page {
         Page {
             dpi: self.dpi,
@@ -124,6 +128,18 @@ impl Page {
             height: self.width,
             borders: self.borders.rotate(),
         }
+    }
+
+    /// returns true if the height of the page is greater than its width
+    /// Note: a square page will return false
+    pub fn is_portrait(&self) -> bool {
+        self.height > self.width
+    }
+
+    /// returns true if the width of the page is greater than the height
+    /// Note: a square page will return false
+    pub fn is_landscape(&self) -> bool {
+        self.width > self.height
     }
 
     /// Return the point in the document that matches to the borders in the top left corner
