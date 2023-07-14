@@ -11,6 +11,7 @@ pub mod page;
 pub mod path;
 pub mod read;
 pub mod shapes;
+pub mod style;
 pub mod text;
 pub mod value;
 
