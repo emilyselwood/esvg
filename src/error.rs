@@ -12,6 +12,7 @@ pub enum Error {
     AngleOutOfRange,
     /// When trying to parse a paper name and it doesn't make sense or it is not implemented yet
     UnknownPaper,
+    MalformedStyle,
     ParseInt(ParseIntError),
     ParseFloat(ParseFloatError),
     ParseBool(str::ParseBoolError),

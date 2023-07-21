@@ -58,15 +58,20 @@ impl Data {
     }
 
     /// Add an arc to step to this path
-    pub fn arc_to(
+    pub fn arc_to<RX, RY, ROT>(
         &mut self,
         p: Point,
-        rx: i32,
-        ry: i32,
-        rotation: f64,
+        rx: RX,
+        ry: RY,
+        rotation: ROT,
         large: bool,
         sweep: bool,
-    ) -> &mut Data {
+    ) -> &mut Data
+    where
+        RX: std::fmt::Display,
+        RY: std::fmt::Display,
+        ROT: std::fmt::Display,
+    {
         let lv = match large {
             true => 1,
             false => 0,
