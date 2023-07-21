@@ -53,10 +53,12 @@ fn to_element(e: &BytesStart) -> Result<Element, Error> {
     let mut element = Element::new(str::from_utf8(e.name().0)?);
     for attr in e.attributes() {
         match attr {
-            Ok(a) => element.set(
-                str::from_utf8(a.key.0)?,
-                str::from_utf8(a.unescape_value()?.as_bytes())?,
-            ),
+            Ok(a) => {
+                _ = element.set(
+                    str::from_utf8(a.key.0)?,
+                    str::from_utf8(a.unescape_value()?.as_bytes())?,
+                )
+            }
             Err(e) => return Err(Error::XMLAttrError(e)),
         }
     }
