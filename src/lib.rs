@@ -126,12 +126,14 @@ impl Element {
     }
 
     /// Set an attribute on this element
-    pub fn set<K, T>(&mut self, key: K, value: T)
+    pub fn set<K, T>(&mut self, key: K, value: T) -> &mut Self
     where
         K: Into<String>,
         T: Into<value::Value>,
     {
         self.attributes.insert(key.into(), value.into());
+
+        self
     }
 
     /// Get the value of an attribute on this element
@@ -184,7 +186,7 @@ impl Element {
     pub fn shallow_clone(&self) -> Element {
         let mut result = Element::new(self.name.as_str());
         for (k, v) in &self.attributes {
-            result.set(k.clone(), v.clone())
+            result.set(k.clone(), v.clone());
         }
         result
     }
@@ -274,10 +276,11 @@ mod tests {
     #[test]
     fn element_pretty_string() {
         let mut element = Element::new("foo");
-        element.set("x", "-10");
-        element.set("y", "10px");
-        element.set("s", "12.5, 13.0");
-        element.set("c", "green");
+        element
+            .set("x", "-10")
+            .set("y", "10px")
+            .set("s", "12.5, 13.0")
+            .set("c", "green");
         element.add(&Element::new("bar"));
 
         assert_eq!(
