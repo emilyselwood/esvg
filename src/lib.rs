@@ -249,6 +249,8 @@ impl fmt::Display for Element {
 #[cfg(test)]
 mod tests {
 
+    use std::collections::HashMap;
+
     use super::Element;
 
     #[test]
@@ -309,10 +311,12 @@ mod tests {
             .add_style("key", "value");
 
         let result = element.style_map().unwrap();
-        assert_eq!(
-            format!("{:?}", result),
-            "{\"guppy\": \"slice\", \"fish\": \"bob\"}"
-        );
+        let mut expected = HashMap::new();
+        expected.insert("guppy".to_string(), "slice".to_string());
+        expected.insert("fish".to_string(), "bob".to_string());
+        expected.insert("key".to_string(), "value".to_string());
+
+        assert_eq!(result, expected);
     }
 
     #[test]
