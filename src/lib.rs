@@ -165,20 +165,16 @@ impl Element {
     }
 
     pub fn style_map(&self) -> Result<HashMap<String, String>, Error> {
-        let value = self.attributes.get("style");
         let mut result = HashMap::new();
 
-        match value {
-            Some(v) => {
-                for e in v.to_string_bare().split(';') {
-                    if let Some((key, value)) = e.split_once(':') {
-                        result.insert(key.to_string(), value.to_string());
-                    } else {
-                        return Err(Error::MalformedStyle);
-                    }
+        if let Some(v) = self.attributes.get("style") {
+            for e in v.to_string_bare().split(';') {
+                if let Some((key, value)) = e.split_once(':') {
+                    result.insert(key.to_string(), value.to_string());
+                } else {
+                    return Err(Error::MalformedStyle);
                 }
             }
-            None => {}
         }
 
         Ok(result)
