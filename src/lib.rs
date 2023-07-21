@@ -11,7 +11,6 @@ pub mod page;
 pub mod path;
 pub mod read;
 pub mod shapes;
-pub mod style;
 pub mod text;
 pub mod value;
 
@@ -143,6 +142,44 @@ impl Element {
         self.attributes.get(&key.into()).map(|s| s.to_string_bare())
     }
 
+    pub fn add_style<K, V>(&mut self, key: K, value: V) -> &mut Self
+    where
+        K: Into<String>,
+        V: Into<value::Value>,
+    {
+        let new_style = match self.attributes.get("style") {
+            Some(existing) => {
+                format!(
+                    "{};{}:{}",
+                    existing.to_string_bare(),
+                    key.into(),
+                    value.into().to_string_bare()
+                )
+            }
+            None => format!("{}:{}", key.into(), value.into().to_string_bare()),
+        };
+
+        self.attributes.insert("style".into(), new_style.into());
+
+        self
+    }
+
+    pub fn style_map(&self) -> Result<HashMap<String, String>, Error> {
+        let mut result = HashMap::new();
+
+        if let Some(v) = self.attributes.get("style") {
+            for e in v.to_string_bare().split(';') {
+                if let Some((key, value)) = e.split_once(':') {
+                    result.insert(key.to_string(), value.to_string());
+                } else {
+                    return Err(Error::MalformedStyle);
+                }
+            }
+        }
+
+        Ok(result)
+    }
+
     /// Create a copy of this element with out its children
     pub fn shallow_clone(&self) -> Element {
         let mut result = Element::new(self.name.as_str());
@@ -212,6 +249,8 @@ impl fmt::Display for Element {
 #[cfg(test)]
 mod tests {
 
+    use std::collections::HashMap;
+
     use super::Element;
 
     #[test]
@@ -248,5 +287,50 @@ mod tests {
              </foo>\n\
              "
         );
+    }
+
+    #[test]
+    fn element_add_style() {
+        let mut element = Element::new("foo");
+        assert_eq!(element.get("style"), None);
+        element.add_style("stroke-width", 5.5);
+        assert_eq!(element.get("style").unwrap(), "stroke-width:5.5");
+        element.add_style("stroke", "#345623");
+        assert_eq!(
+            element.get("style").unwrap(),
+            "stroke-width:5.5;stroke:#345623"
+        );
+    }
+
+    #[test]
+    fn element_style_map_happy() {
+        let mut element = Element::new("foo");
+        element
+            .add_style("fish", "bob")
+            .add_style("guppy", "slice")
+            .add_style("key", "value");
+
+        let result = element.style_map().unwrap();
+        let mut expected = HashMap::new();
+        expected.insert("guppy".to_string(), "slice".to_string());
+        expected.insert("fish".to_string(), "bob".to_string());
+        expected.insert("key".to_string(), "value".to_string());
+
+        assert_eq!(result, expected);
+    }
+
+    #[test]
+    fn element_style_map_unhappy() {
+        let mut element = Element::new("foo");
+        let result = element.style_map().unwrap();
+        assert_eq!(format!("{:?}", result), "{}");
+
+        element.set("style", "something broken");
+
+        let result_broken = element.style_map();
+        assert!(result_broken.is_err());
+        // TODO: fix error types so that they can be compared.
+        // For now we have to hope its the right error being returned
+        // assert_eq!(result_broken.unwrap_err(), Error::MalformedStyle);
     }
 }
