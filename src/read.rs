@@ -45,7 +45,7 @@ pub fn parse_string(input: String) -> Result<Element, Error> {
 
     match result {
         Some(e) => Ok(e),
-        None => Err(Error::BadDocument),
+        None => Err(Error::EmptyDocument),
     }
 }
 

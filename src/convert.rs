@@ -130,7 +130,7 @@ pub fn extract_unit(value: &str) -> Result<&str, error::Error> {
 pub fn parse_angle(value: &str) -> Result<f64, error::Error> {
     let angle = f64::from_str(value)?;
     if !(0.0..=360.0).contains(&angle) {
-        Err(error::Error::AngleOutOfRange)
+        Err(error::Error::AngleOutOfRange(angle))
     } else {
         Ok(angle.to_radians())
     }
@@ -149,7 +149,7 @@ pub fn parse_angle(value: &str) -> Result<f64, error::Error> {
 /// ```
 pub fn parse_colour(value: &str) -> Result<(f64, f64, f64, f64), error::Error> {
     if value.len() < 6 {
-        return Err(error::Error::ColourError);
+        return Err(error::Error::ColourError(value.to_string()));
     }
     let mut start = 0;
     if value.starts_with('#') {
