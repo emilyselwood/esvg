@@ -97,7 +97,7 @@ impl Page {
                     borders: border,
                 })
             } else {
-                Err(Error::UnknownPaper)
+                Err(Error::UnknownPaper(name.to_string()))
             }
         } else {
             match name.to_lowercase().as_str() {
@@ -106,7 +106,7 @@ impl Page {
                 "a4" => Ok(Page::A4_with_border(dpi, border)),
                 "a3" => Ok(Page::A3_with_border(dpi, border)),
                 "letter" => Ok(Page::letter_with_border(dpi, border)),
-                _ => Err(Error::UnknownPaper),
+                _ => Err(Error::UnknownPaper(name.to_string())),
             }
         }
     }

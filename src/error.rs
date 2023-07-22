@@ -9,12 +9,12 @@ use thiserror::Error;
 #[derive(Error, Debug)]
 pub enum Error {
     /// When parsing an angle and its not between 0 and 360 degrees
-    #[error("Angle out of range")]
-    AngleOutOfRange,
+    #[error("Angle out of range: {0:?}")]
+    AngleOutOfRange(f64),
     /// When trying to parse a paper name and it doesn't make sense or it is not implemented yet
-    #[error("Unknown paper")]
-    UnknownPaper,
-    #[error("A style tag is mall formed")]
+    #[error("Unknown paper: {0:?}")]
+    UnknownPaper(String),
+    #[error("A style tag is badly formed")]
     MalformedStyle,
     #[error("Could not parse an integer: {0:?}")]
     ParseInt(ParseIntError),
@@ -29,8 +29,8 @@ pub enum Error {
     #[error("An XML attribute error: {0:?}")]
     XMLAttrError(AttrError),
     /// Attempted to parse something that wasn't a valid xml document
-    #[error("Not a valid document")]
-    BadDocument,
+    #[error("Tried to parse document but it was empty")]
+    EmptyDocument,
     #[error("A utf-8 encoding error: {0:?}")]
     UTF8Error(str::Utf8Error),
     /// A problem trying to parse a hex colour, likely the value is too short
