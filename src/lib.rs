@@ -313,11 +313,12 @@ mod tests {
             .add_style("guppy", "slice")
             .add_style("key", "value");
 
-        let result = element.style_map().unwrap();
         let mut expected = HashMap::new();
         expected.insert("guppy".to_string(), "slice".to_string());
         expected.insert("fish".to_string(), "bob".to_string());
         expected.insert("key".to_string(), "value".to_string());
+
+        let result = element.style_map().unwrap();
 
         assert_eq!(result, expected);
     }
@@ -332,8 +333,8 @@ mod tests {
 
         let result_broken = element.style_map();
         assert!(result_broken.is_err());
-        // TODO: fix error types so that they can be compared.
-        // For now we have to hope its the right error being returned
+        // Due to io::error and others not implementing PartialEq for a range of reasons we cant compare the actual
+        // error here For now we have to hope its the right error being returned
         // assert_eq!(result_broken.unwrap_err(), Error::MalformedStyle);
     }
 }

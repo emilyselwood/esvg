@@ -149,7 +149,7 @@ pub fn parse_angle(value: &str) -> Result<f64, error::Error> {
 /// ```
 pub fn parse_colour(value: &str) -> Result<(f64, f64, f64, f64), error::Error> {
     if value.len() < 6 {
-        return Err(error::Error::ColourError);
+        return Err(error::Error::ColourError(value.to_string()));
     }
     let mut start = 0;
     if value.starts_with('#') {
