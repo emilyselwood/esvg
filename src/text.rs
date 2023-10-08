@@ -92,7 +92,7 @@ pub fn create_text_style(
  */
 pub fn find_text_size(text: &str, style: TextStyle) -> Result<BoundingBox, Error> {
     let font_path = find_font(style.font_family)?;
-    let data = std::fs::read(&font_path)?;
+    let data = std::fs::read(font_path)?;
     let font = Font::try_from_bytes(&data).ok_or(Error::FontLoadingError)?;
 
     let scale = Scale::uniform(style.font_size as f32);
