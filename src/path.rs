@@ -9,12 +9,12 @@ pub struct Data {
 }
 
 /// Create a data attribute from a series of points
-pub fn create(points: &Vec<Point>) -> Element {
+pub fn create(points: &[Point]) -> Element {
     Data::from_points(points).to_path()
 }
 
 /// Create a closed loop data attribute from a series of points
-pub fn create_closed(points: &Vec<Point>) -> Element {
+pub fn create_closed(points: &[Point]) -> Element {
     Data::from_points(points).close().to_path()
 }
 
@@ -31,7 +31,7 @@ impl Data {
 
     /// Create the element content from a series of points
     /// Note: there must be more than one point for this to do anything.
-    pub fn from_points(points: &Vec<Point>) -> Self {
+    pub fn from_points(points: &[Point]) -> Self {
         let mut data = Data::new();
         if points.len() > 1 {
             data.move_to(points[0]);
