@@ -4,7 +4,6 @@ use std::f64::consts::PI;
 use std::str::FromStr;
 
 use crate::error;
-use crate::error::Error;
 
 /// convert value of inches to pixels given the dpi
 pub fn inches_to_pixels(value: f64, dpi: i32) -> i32 {
@@ -92,7 +91,7 @@ pub fn parse_length(value: &str, dpi: i32) -> Result<i32, error::Error> {
     }
 }
 
-fn parse_inches(value: &str, dpi: i32) -> Result<i32, Error> {
+fn parse_inches(value: &str, dpi: i32) -> Result<i32, error::Error> {
     let l = value.len();
 
     let numeric_part: &str = if value.ends_with("in") {
