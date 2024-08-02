@@ -4,6 +4,7 @@ use std::f64::consts::PI;
 use std::str::FromStr;
 
 use crate::error;
+use crate::error::Error;
 
 /// convert value of inches to pixels given the dpi
 pub fn inches_to_pixels(value: f64, dpi: i32) -> i32 {
@@ -57,9 +58,14 @@ pub fn pixels_to_inches(value: i32, dpi: i32) -> f64 {
 
 /// Parse a length. Handles unit suffixes
 ///
+/// If no suffix is provided it will assume inches. (Sorry this pains me too, but quilters mostly seem to be americans,
+/// and americans use inches for everything.)
+///
 /// ```
 /// use esvg::convert::parse_length;
 /// assert_eq!(parse_length("27in", 96).unwrap(), 2592);
+/// assert_eq!(parse_length("2.5mm", 96).unwrap(), 9);
+/// assert_eq!(parse_length("2 4/16in", 96).unwrap(), 216);
 /// ```
 pub fn parse_length(value: &str, dpi: i32) -> Result<i32, error::Error> {
     let l = value.len();
@@ -74,18 +80,51 @@ pub fn parse_length(value: &str, dpi: i32) -> Result<i32, error::Error> {
             Ok(cm_to_pixels(cm, dpi))
         }
         "in" => {
-            let inches = f64::from_str(&value[..l - 2])?;
-            Ok(inches_to_pixels(inches, dpi))
+            // Inches are often provided in fractions so lets try and figure those out.
+            // examples: "1 1/2in", "5/8in", "3/16in", "7 1/4in", "1.544in", "1in"
+            parse_inches(value, dpi)
         }
         "px" => {
             let px = i32::from_str(&value[..l - 2])?;
             Ok(px)
         }
-        _ => {
-            let inches = f64::from_str(value)?;
-            Ok(inches_to_pixels(inches, dpi))
-        }
+        _ => parse_inches(value, dpi),
     }
+}
+
+fn parse_inches(value: &str, dpi: i32) -> Result<i32, Error> {
+    let l = value.len();
+
+    let numeric_part: &str = if value.ends_with("in") {
+        &value[..l - 2]
+    } else {
+        value
+    };
+
+    let inches = if numeric_part.contains(' ') || numeric_part.contains('/') {
+        let (whole_inches, remainder) = if let Some(i) = numeric_part.find(' ') {
+            // some kind of whole number
+            (f64::from_str(numeric_part[..i].trim())?, &numeric_part[i..])
+        } else {
+            (0.0, numeric_part)
+        };
+        println!("whole inches: {}", whole_inches);
+
+        // fractional part
+        let (top, bottom) = if let Some(i) = remainder.find('/') {
+            (
+                f64::from_str(remainder[..i].trim())?,
+                f64::from_str(remainder[i + 1..].trim())?,
+            )
+        } else {
+            (1.0, 1.0)
+        };
+
+        whole_inches + (top / bottom)
+    } else {
+        f64::from_str(numeric_part)?
+    };
+    Ok(inches_to_pixels(inches, dpi))
 }
 
 /// Convert a pixel length into a specified unit.
@@ -192,6 +231,8 @@ pub const DEG_360: f64 = 360.0 * (PI / 180.0);
 #[cfg(test)]
 mod tests {
 
+    use crate::convert::parse_length;
+
     use super::parse_colour;
     #[test]
     pub fn colour_conversion_invalid() {
@@ -207,5 +248,23 @@ mod tests {
         assert_eq!(g, 0.047058823529411764);
         assert_eq!(b, 0.047058823529411764);
         assert_eq!(a, 1.0);
+    }
+
+    #[test]
+    pub fn parse_length_valid() {
+        let value = parse_length("2.5", 96).unwrap();
+        assert_eq!(value, 240);
+
+        let value = parse_length("2.5cm", 96).unwrap();
+        assert_eq!(value, 94);
+
+        let value = parse_length("2.5mm", 96).unwrap();
+        assert_eq!(value, 9);
+
+        let value = parse_length("2 4/8in", 96).unwrap();
+        assert_eq!(value, 240);
+
+        let value = parse_length("1", 96).unwrap();
+        assert_eq!(value, 96);
     }
 }
