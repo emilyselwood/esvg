@@ -107,7 +107,6 @@ fn parse_inches(value: &str, dpi: i32) -> Result<i32, error::Error> {
         } else {
             (0.0, numeric_part)
         };
-        println!("whole inches: {}", whole_inches);
 
         // fractional part
         let (top, bottom) = if let Some(i) = remainder.find('/') {
@@ -265,5 +264,8 @@ mod tests {
 
         let value = parse_length("1", 96).unwrap();
         assert_eq!(value, 96);
+
+        let value = parse_length("5/10", 96).unwrap();
+        assert_eq!(value, 48);
     }
 }
