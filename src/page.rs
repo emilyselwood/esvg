@@ -105,6 +105,7 @@ impl Page {
                 "a5" => Ok(Page::A5_with_border(dpi, border)),
                 "a4" => Ok(Page::A4_with_border(dpi, border)),
                 "a3" => Ok(Page::A3_with_border(dpi, border)),
+                "a2" => Ok(Page::A2_with_border(dpi, border)),
                 "letter" => Ok(Page::letter_with_border(dpi, border)),
                 _ => Err(Error::UnknownPaper(name.to_string())),
             }
@@ -117,6 +118,7 @@ impl Page {
         A5, A5_with_border: 5.8, 8.27,
         A4, A4_with_border: 8.27, 11.7,
         A3, A3_with_border: 11.7, 16.5,
+        A2, A2_with_border: 16.6, 23.4,
         letter, letter_with_border: 8.5, 11.0,
     );
 
