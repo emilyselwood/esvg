@@ -102,10 +102,14 @@ impl Page {
         } else {
             match name.to_lowercase().as_str() {
                 // TODO: add more paper sizes
+                "a7" => Ok(Page::A7_with_border(dpi, border)),
+                "a6" => Ok(Page::A6_with_border(dpi, border)),
                 "a5" => Ok(Page::A5_with_border(dpi, border)),
                 "a4" => Ok(Page::A4_with_border(dpi, border)),
                 "a3" => Ok(Page::A3_with_border(dpi, border)),
                 "a2" => Ok(Page::A2_with_border(dpi, border)),
+                "a1" => Ok(Page::A1_with_border(dpi, border)),
+                "a0" => Ok(Page::A0_with_border(dpi, border)),
                 "letter" => Ok(Page::letter_with_border(dpi, border)),
                 _ => Err(Error::UnknownPaper(name.to_string())),
             }
@@ -115,10 +119,14 @@ impl Page {
     // Create paper sizes using macros to avoid duplication
     // TODO: add more paper sizes (make sure to keep with the same pattern)
     paper_size!(
+        A7, A7_with_border: 2.9, 4.1,
+        A6, A6_with_border: 4.1, 5.8,
         A5, A5_with_border: 5.8, 8.27,
         A4, A4_with_border: 8.27, 11.7,
         A3, A3_with_border: 11.7, 16.5,
         A2, A2_with_border: 16.6, 23.4,
+        A1, A1_with_border: 23.4, 33.1,
+        A0, A0_with_border: 33.1, 46.8,
         letter, letter_with_border: 8.5, 11.0,
     );
 
