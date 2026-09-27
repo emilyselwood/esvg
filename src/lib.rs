@@ -181,18 +181,15 @@ impl Element {
         K: Into<String>,
     {
         let existing = self.get("style");
-        match existing {
-            Some(_style) => {
-                let mut style_map = self.style_map()?;
-                style_map.remove(&key.into());
-                if style_map.is_empty() {
-                    let _ = self.remove("style");
-                } else {
-                    self.attributes
-                        .insert("style".into(), render_style_map(style_map).into());
-                }
+        if let Some(_s) = existing {
+            let mut style_map = self.style_map()?;
+            style_map.remove(&key.into());
+            if style_map.is_empty() {
+                let _ = self.remove("style");
+            } else {
+                self.attributes
+                    .insert("style".into(), render_style_map(style_map).into());
             }
-            None => {}
         }
 
         Ok(self)
