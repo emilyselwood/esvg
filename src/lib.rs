@@ -144,6 +144,16 @@ impl Element {
         self.attributes.get(&key.into()).map(|s| s.to_string_bare())
     }
 
+    /// Remove an attribute from this element, returning the value it had if it existed.
+    pub fn remove<K>(&mut self, key: K) -> Option<String>
+    where
+        K: Into<String>,
+    {
+        self.attributes
+            .remove(&key.into())
+            .map(|s| s.to_string_bare())
+    }
+
     pub fn add_style<K, V>(&mut self, key: K, value: V) -> &mut Self
     where
         K: Into<String>,
@@ -164,6 +174,25 @@ impl Element {
         self.attributes.insert("style".into(), new_style.into());
 
         self
+    }
+
+    pub fn remove_style<K>(&mut self, key: K) -> Result<&mut Self, Error>
+    where
+        K: Into<String>,
+    {
+        let existing = self.get("style");
+        if let Some(_s) = existing {
+            let mut style_map = self.style_map()?;
+            style_map.remove(&key.into());
+            if style_map.is_empty() {
+                let _ = self.remove("style");
+            } else {
+                self.attributes
+                    .insert("style".into(), render_style_map(style_map).into());
+            }
+        }
+
+        Ok(self)
     }
 
     pub fn style_map(&self) -> Result<HashMap<String, String>, Error> {
@@ -248,6 +277,15 @@ impl fmt::Display for Element {
     }
 }
 
+fn render_style_map(styles: HashMap<String, String>) -> String {
+    let mut result: String = String::new();
+    for (key, value) in styles {
+        result += &format!("{}:{};", key, value);
+    }
+
+    result
+}
+
 #[cfg(test)]
 mod tests {
 
@@ -290,6 +328,19 @@ mod tests {
              </foo>\n\
              "
         );
+    }
+
+    #[test]
+    fn element_remove_attribute() {
+        let mut element = Element::new("foo");
+        assert_eq!(element.get("aardvark"), None);
+
+        element.set("aardvark", "fish");
+        assert_eq!(element.get("aardvark"), Some("fish".to_string()));
+
+        let result = element.remove("aardvark");
+        assert_eq!(result, Some("fish".to_string()));
+        assert_eq!(element.get("aardvark"), None);
     }
 
     #[test]
@@ -336,5 +387,17 @@ mod tests {
         // Due to io::error and others not implementing PartialEq for a range of reasons we cant compare the actual
         // error here For now we have to hope its the right error being returned
         // assert_eq!(result_broken.unwrap_err(), Error::MalformedStyle);
+    }
+
+    #[test]
+    fn remove_style_basic() {
+        let mut element = Element::new("foo");
+        assert_eq!(element.get("style"), None);
+
+        element.add_style("stroke", "blue");
+        assert_eq!(element.get("style"), Some("stroke:blue".to_string()));
+
+        let _ = element.remove_style("stroke");
+        assert_eq!(element.get("style"), None);
     }
 }
