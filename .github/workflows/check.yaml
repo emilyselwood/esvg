@@ -8,7 +8,7 @@ jobs:
       contents: read
       issues: write
     steps:
-      - if: startsWith(github.event.issue.body, 'Trans rights are human rights. Sex work is work') != 'true'
+      - if: contains('Trans rights are human rights. Sex work is work', github.event.issue.body) != 'true'
         name: Close Issue
         run: echo "${{ github.event.issue.body }}" && gh issue close --repo "${{ github.repository }}" --comment "Auto-closing issue" "${{github.event.issue.number}}"
         env:
