@@ -36,6 +36,14 @@ pub enum Error {
     /// A problem trying to parse a hex colour, likely the value is too short
     #[error("Invalid colour '{0:?}'")]
     ColourError(String),
+    #[error("The document has a cycle in it. Making it impossible to find a root.")]
+    CyclicDocument,
+    #[error("The font {0} could not be accessed.")]
+    FontMemoryFont(String),
+    #[error("The font could not be selected {0:?}")]
+    FontSelectionError(font_kit::error::SelectionError),
+    #[error("The font could not be loaded")]
+    FontLoadingError,
 }
 
 impl From<ParseIntError> for Error {
@@ -77,5 +85,11 @@ impl From<AttrError> for Error {
 impl From<str::Utf8Error> for Error {
     fn from(other: str::Utf8Error) -> Self {
         Error::UTF8Error(other)
+    }
+}
+
+impl From<font_kit::error::SelectionError> for Error {
+    fn from(other: font_kit::error::SelectionError) -> Self {
+        Error::FontSelectionError(other)
     }
 }
